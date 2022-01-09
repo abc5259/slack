@@ -1,4 +1,5 @@
 import useInput from '@hooks/useInput';
+import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } from './styles';
 
@@ -8,7 +9,8 @@ const SignUp = () => {
   const [password, , setPassword] = useInput('');
   const [passwordCheck, , setPasswordCheck] = useInput('');
   const [mismatchError, setMismatchError] = useState(false);
-
+  const [signUpError, setSignUpError] = useState('');
+  const [signUpSuccess, setSignUpSuccess] = useState(false);
   const onChangePassword = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       setPassword(e.target.value);
@@ -26,9 +28,22 @@ const SignUp = () => {
   const onSubmit = useCallback(
     (e: React.FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      console.log(email, nickname, password, passwordCheck);
-      if (!mismatchError) {
-        console.log('!mismatchError');
+      if (!mismatchError && nickname) {
+        setSignUpError('');
+        setSignUpSuccess(false);
+        console.log(email, nickname, password, passwordCheck);
+        axios
+          .post('http://localhost:3095/api/users', {
+            email,
+            nickname,
+            password,
+          })
+          .then((response) => {
+            setSignUpSuccess(true);
+          })
+          .catch((error) => {
+            setSignUpError(error.response.data);
+          });
       }
     },
     [email, nickname, password, passwordCheck, mismatchError],
@@ -67,9 +82,9 @@ const SignUp = () => {
             />
           </div>
           {mismatchError && <Error>비밀번호가 일치하지 않습니다.</Error>}
-          {/* {!nickname && <Error>닉네임을 입력해주세요.</Error>}
-          {signUpError && <Error>이미 가입된 이메일입니다.</Error>}
-          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>} */}
+          {!nickname && <Error>닉네임을 입력해주세요.</Error>}
+          {signUpError && <Error>{signUpError}</Error>}
+          {signUpSuccess && <Success>회원가입되었습니다! 로그인해주세요.</Success>}
         </Label>
         <Button type="submit">회원가입</Button>
       </Form>
