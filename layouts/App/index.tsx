@@ -5,7 +5,7 @@ import loadable from '@loadable/component';
 // 코드 스플릿팅
 const LogIn = loadable(() => import('@pages/Login'));
 const SignUp = loadable(() => import('@pages/Signup'));
-const Channel = loadable(() => import('@pages/Channel'));
+const Workspace = loadable(() => import('@layouts/Workspace'));
 
 const App = () => {
   return (
@@ -13,7 +13,7 @@ const App = () => {
       <Redirect exact path="/" to="/login" />
       <Route path="/login" component={LogIn} />
       <Route path="/signup" component={SignUp} />
-      <Route path="/workspace/channel" component={Channel} />
+      <Route path="/workspace" component={Workspace} />
     </Switch>
   );
 };

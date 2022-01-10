@@ -23,7 +23,7 @@ const LogIn = () => {
             withCredentials: true,
           },
         )
-        .then((response) => {
+        .then(() => {
           mutate(); //원할때 swr호출하기
         })
         .catch((error) => {

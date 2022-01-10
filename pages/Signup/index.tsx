@@ -42,7 +42,7 @@ const SignUp = () => {
             nickname,
             password,
           })
-          .then((response) => {
+          .then(() => {
             setSignUpSuccess(true);
           })
           .catch((error) => {
