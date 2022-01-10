@@ -1,19 +1,13 @@
 import useInput from '@hooks/useInput';
 import { Redirect } from 'react-router';
-import { getUserFetcher } from '@utils/fetcher';
+import { BASE_URL, getUserFetcher } from '@utils/fetcher';
 import axios from 'axios';
 import React, { useCallback, useState } from 'react';
 import { Link } from 'react-router-dom';
 import useSWR from 'swr';
 import { Button, Error, Form, Header, Input, Label, LinkContainer, Success } from '../Signup/styles';
 const LogIn = () => {
-  const {
-    data: userData,
-    error,
-    mutate,
-  } = useSWR('http://localhost:3095/api/users', getUserFetcher, {
-    dedupingInterval: 10000, //주기적으로 호출은 되지만 dedupingInterval 기간 내에는 캐시에서 불러와준다.
-  });
+  const { data: userData, error, mutate } = useSWR('/api/users', getUserFetcher);
   const [logInError, setLogInError] = useState(false);
   const [email, onChangeEmail] = useInput('');
   const [password, onChangePassword] = useInput('');
@@ -23,7 +17,7 @@ const LogIn = () => {
       setLogInError(false);
       axios
         .post(
-          'http://localhost:3095/api/users/login',
+          `${BASE_URL}/api/users/login`,
           { email, password },
           {
             withCredentials: true,
