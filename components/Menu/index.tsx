@@ -3,7 +3,7 @@ import { CreateMenu, CloseModalButton } from './styles';
 
 interface IMenuProps {
   show: boolean;
-  onCloseModal: () => void;
+  onCloseModal: (e: React.MouseEvent<HTMLElement>) => void;
   style: CSSProperties;
   closeButton?: boolean;
 }
@@ -11,6 +11,9 @@ interface IMenuProps {
 const Menu: FC<IMenuProps> = ({ children, style, show, onCloseModal, closeButton = true }) => {
   const stopPropagation = (e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation();
+  };
+  const onClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log('clicked');
   };
   return (
     <CreateMenu onClick={onCloseModal}>

@@ -1,6 +1,6 @@
 import { BASE_URL, getUserFetcher } from '@utils/fetcher';
 import axios from 'axios';
-import React, { FC, useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import { Redirect, Route, Switch } from 'react-router';
 import gravatar from 'gravatar';
 import { IUser } from '@typings/db';
@@ -23,11 +23,19 @@ import {
 } from './styles';
 import loadable from '@loadable/component';
 import Menu from '@components/Menu';
+import { Link } from 'react-router-dom';
+import { Button, Input, Label } from '@pages/Signup/styles';
+import useInput from '@hooks/useInput';
+import Modal from '@components/Modal';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
-const Workspace: FC = ({ children }) => {
+const Workspace = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCreateWorkspaceModal, setShowCreateWorkspaceModal] = useState(false);
+  const [newWorkspace, onChangeNewWorkspace, setNewWorkspace] = useInput('');
+  const [newUrl, onChangeNewUrl, setNewUrl] = useInput('');
+
   const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', getUserFetcher);
   const onLogout = useCallback(() => {
     axios
@@ -36,9 +44,20 @@ const Workspace: FC = ({ children }) => {
       .catch((error) => console.log(error.response.data));
   }, []);
 
-  const onClickUserProfile = useCallback(() => {
+  const onClickUserProfile = useCallback((e: React.MouseEvent<HTMLElement>) => {
+    console.log(e.target);
     setShowUserMenu((prev) => !prev);
   }, []);
+
+  const onClickCreateWorkspace = useCallback(() => {
+    setShowCreateWorkspaceModal(true);
+  }, []);
+
+  const onCloseModal = () => {
+    setShowCreateWorkspaceModal(false);
+  };
+
+  const onCreateWorkspace = (e: React.FormEvent<HTMLFormElement>) => {};
 
   if (!userData && !error) {
     return <Redirect to="/login"></Redirect>;
@@ -68,7 +87,17 @@ const Workspace: FC = ({ children }) => {
         )}
       </Header>
       <WorkspaceWrapper>
-        <Workspaces>test</Workspaces>
+        <Workspaces>
+          {userData &&
+            userData.Workspaces.map((workspace) => {
+              return (
+                <Link key={workspace.id} to={`/workspace/${workspace.id}/channel`}>
+                  <WorkspaceButton>{workspace.name.slice(0, 1).toUpperCase()}</WorkspaceButton>
+                </Link>
+              );
+            })}
+          <AddButton onClick={onClickCreateWorkspace}>+</AddButton>
+        </Workspaces>
         <Channels>
           <WorkspaceName>Slect</WorkspaceName>
           <MenuScroll>menu scroll</MenuScroll>
@@ -80,7 +109,19 @@ const Workspace: FC = ({ children }) => {
           </Switch>
         </Chats>
       </WorkspaceWrapper>
-      {children}
+      <Modal show={showCreateWorkspaceModal} onCloseModal={onCloseModal}>
+        <form onSubmit={onCreateWorkspace}>
+          <Label id="workspace-label">
+            <span>워크스페이스 이름</span>
+            <Input id="workspace" value={newWorkspace} onChange={onChangeNewWorkspace} />
+          </Label>
+          <Label id="workspace-url-label">
+            <span>워크스페이스 url</span>
+            <Input id="workspace" value={newUrl} onChange={onChangeNewUrl} />
+          </Label>
+          <Button type="submit">Submit</Button>
+        </form>
+      </Modal>
     </div>
   );
 };
