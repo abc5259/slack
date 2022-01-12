@@ -27,6 +27,7 @@ import { Link } from 'react-router-dom';
 import { Button, Input, Label } from '@pages/Signup/styles';
 import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
+import { toast } from 'react-toastify';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
@@ -53,11 +54,28 @@ const Workspace = () => {
     setShowCreateWorkspaceModal(true);
   }, []);
 
-  const onCloseModal = () => {
+  const onCloseModal = useCallback(() => {
     setShowCreateWorkspaceModal(false);
-  };
+  }, []);
 
-  const onCreateWorkspace = (e: React.FormEvent<HTMLFormElement>) => {};
+  const onCreateWorkspace = useCallback(
+    (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      if (!newWorkspace || !newWorkspace.trim()) return;
+      if (!newUrl || !newUrl.trim()) return;
+      axios
+        .post(`${BASE_URL}/api/workspaces`, { workspace: newWorkspace, url: newUrl }, { withCredentials: true })
+        .then(() => mutate())
+        .catch((error) => {
+          console.log(error);
+          toast.error(error.response.data, { position: 'top-center' });
+        });
+      setShowCreateWorkspaceModal(false);
+      setNewWorkspace('');
+      setNewUrl('');
+    },
+    [newWorkspace, newUrl],
+  );
 
   if (!userData && !error) {
     return <Redirect to="/login"></Redirect>;
