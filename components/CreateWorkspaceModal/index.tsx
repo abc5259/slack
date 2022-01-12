@@ -5,12 +5,13 @@ import useInput from '@hooks/useInput';
 import axios from 'axios';
 import { BASE_URL } from '@utils/fetcher';
 import { toast } from 'react-toastify';
+import { KeyedMutator } from 'swr';
 
 interface ICreateChannelModalProps {
   show: boolean;
   onCloseModal: () => void;
   setShowCreateWorkspaceModal: (flag: boolean) => void;
-  mutate: any;
+  mutate: KeyedMutator<any>;
 }
 
 const CreateWorkspaceModal: VFC<ICreateChannelModalProps> = ({

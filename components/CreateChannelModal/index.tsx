@@ -1,5 +1,5 @@
 import Modal from '@components/Modal';
-import React, { useCallback, useState, VFC } from 'react';
+import React, { useCallback, VFC } from 'react';
 import { Button, Input, Label } from '@pages/Signup/styles';
 import useInput from '@hooks/useInput';
 import axios from 'axios';
