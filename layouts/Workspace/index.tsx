@@ -28,8 +28,10 @@ import { Button, Input, Label } from '@pages/Signup/styles';
 import useInput from '@hooks/useInput';
 import Modal from '@components/Modal';
 import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
+toast.configure();
 
 const Workspace = () => {
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -67,8 +69,8 @@ const Workspace = () => {
         .post(`${BASE_URL}/api/workspaces`, { workspace: newWorkspace, url: newUrl }, { withCredentials: true })
         .then(() => mutate())
         .catch((error) => {
-          console.log(error);
-          toast.error(error.response.data, { position: 'top-center' });
+          console.log(error.response.data);
+          toast.error('다시 시도해 주세요!', { position: 'top-center' });
         });
       setShowCreateWorkspaceModal(false);
       setNewWorkspace('');
