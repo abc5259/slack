@@ -3,7 +3,7 @@ import { CreateMenu, CloseModalButton } from './styles';
 
 interface IMenuProps {
   show: boolean;
-  onCloseModal: (e: React.MouseEvent<HTMLElement>) => void;
+  onCloseModal: () => void;
   style: CSSProperties;
   closeButton?: boolean;
 }
