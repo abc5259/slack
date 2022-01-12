@@ -68,8 +68,12 @@ const Workspace = () => {
       <Header>
         {userData && (
           <RightMenu>
-            <span onClick={onClickUserProfile}>
-              <ProfileImg src={gravatar.url(userData.email, { s: '28px', d: 'retro' })} alt={userData.nickname} />
+            <span>
+              <ProfileImg
+                onClick={onClickUserProfile}
+                src={gravatar.url(userData.email, { s: '28px', d: 'retro' })}
+                alt={userData.nickname}
+              />
               {showUserMenu && (
                 <Menu style={{ right: 0, top: 38 }} show={showUserMenu} onCloseModal={onClickUserProfile}>
                   <ProfileModal>
