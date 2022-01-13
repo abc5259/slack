@@ -29,6 +29,7 @@ import CreateWorkspaceModal from '@components/CreateWorkspaceModal';
 import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
 import InviteChannelModal from '@components/InviteChannelModal';
 import DMList from '@components/DMList';
+import ChannelList from '@components/ChannelList';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
@@ -141,11 +142,8 @@ const Workspace: VFC = () => {
                 </WorkspaceModal>
               </Menu>
             )}
-            {channelData &&
-              channelData.map((channel) => {
-                return <div key={channel.id}>{channel.name}</div>;
-              })}
-            {/* <ChannelList userData={userData} /> */}
+
+            <ChannelList />
             <DMList />
           </MenuScroll>
         </Channels>
@@ -173,11 +171,11 @@ const Workspace: VFC = () => {
         setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
         mutate={mutate}
       />
-      <InviteChannelModal
+      {/* <InviteChannelModal
         show={showInviteChannelModal}
         onCloseModal={onCloseModal}
         setShowInviteChannelModal={setShowInviteChannelModal}
-      />
+      /> */}
     </div>
   );
 };
