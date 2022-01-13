@@ -27,6 +27,8 @@ import { Link } from 'react-router-dom';
 import CreateChannelModal from '@components/CreateChannelModal';
 import CreateWorkspaceModal from '@components/CreateWorkspaceModal';
 import InviteWorkspaceModal from '@components/InviteWorkspaceModal';
+import InviteChannelModal from '@components/InviteChannelModal';
+import DMList from '@components/DMList';
 const Channel = loadable(() => import('@pages/Channel'));
 const DirectMessage = loadable(() => import('@pages/DirectMessage'));
 
@@ -36,10 +38,16 @@ const Workspace: VFC = () => {
   const [showWorkspaceModal, setShowWorkspaceModal] = useState(false);
   const [showCreateChannelModal, setShowCreateChannelModal] = useState(false);
   const [showInviteWorkspaceModal, setShowInviteWorkspaceModal] = useState(false);
+  const [showInviteChannelModal, setShowInviteChannelModal] = useState(false);
   const { workspace } = useParams<{ workspace: string }>();
+
   const { data: userData, error, mutate } = useSWR<IUser | false>('/api/users', getUserFetcher);
   const { data: channelData } = useSWR<IChannel[] | false>(
     userData ? `/api/workspaces/${workspace}/channels` : null,
+    getUserFetcher,
+  );
+  const { data: memberData } = useSWR<IChannel[] | false>(
+    userData ? `/api/workspaces/${workspace}/members` : null,
     getUserFetcher,
   );
 
@@ -62,6 +70,7 @@ const Workspace: VFC = () => {
     setShowCreateWorkspaceModal(false);
     setShowCreateChannelModal(false);
     setShowInviteWorkspaceModal(false);
+    setShowInviteChannelModal(false);
   }, []);
 
   const toggleWorkspaceModal = useCallback(() => {
@@ -126,7 +135,7 @@ const Workspace: VFC = () => {
               <Menu style={{ top: 95, left: 80 }} show={showWorkspaceModal} onCloseModal={toggleWorkspaceModal}>
                 <WorkspaceModal>
                   <h2>Sleack</h2>
-                  <button onClick={onClickInviteWorkspace}>초대하기</button>
+                  <button onClick={onClickInviteWorkspace}>워크스페이스에 사용자 초대</button>
                   <button onClick={onClickAddChannel}>채널 만들기</button>
                   <button onClick={onLogout}>로그아웃</button>
                 </WorkspaceModal>
@@ -136,11 +145,13 @@ const Workspace: VFC = () => {
               channelData.map((channel) => {
                 return <div key={channel.id}>{channel.name}</div>;
               })}
+            {/* <ChannelList userData={userData} /> */}
+            <DMList />
           </MenuScroll>
         </Channels>
         <Chats>
           <Switch>
-            <Route path="/workspace/:workspace/channel/:channel" component={Channel} />
+            <Route path="/workspace/:workspace/channel/:channels" component={Channel} />
             <Route path="/workspace/:workspace/dm/:id" component={DirectMessage} />
           </Switch>
         </Chats>
@@ -161,6 +172,11 @@ const Workspace: VFC = () => {
         onCloseModal={onCloseModal}
         setShowInviteWorkspaceModal={setShowInviteWorkspaceModal}
         mutate={mutate}
+      />
+      <InviteChannelModal
+        show={showInviteChannelModal}
+        onCloseModal={onCloseModal}
+        setShowInviteChannelModal={setShowInviteChannelModal}
       />
     </div>
   );

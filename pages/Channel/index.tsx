@@ -5,7 +5,7 @@ const Channel = () => {
   return (
     <>
       <Container>
-        <Header>채널!</Header>
+        <Header>채널d</Header>
       </Container>
     </>
   );
