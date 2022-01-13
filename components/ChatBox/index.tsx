@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, VFC } from 'react';
+import React, { useCallback, useEffect, useRef, VFC } from 'react';
 import { ChatArea, Form, MentionsTextarea, SendButton, Toolbox } from './styles';
 import autosize from 'autosize';
 
@@ -18,13 +18,16 @@ const ChatBox: VFC<IChatBoxProps> = ({ chat, onSubmitForm, onChangeChat, placeho
     }
   }, []);
 
-  const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
-    if (e.key === 'Enter') {
-      if (!e.shiftKey) {
-        onSubmitForm(e);
+  const onKeyDown = useCallback(
+    (e: React.KeyboardEvent<HTMLElement>) => {
+      if (e.key === 'Enter') {
+        if (!e.shiftKey) {
+          onSubmitForm(e);
+        }
       }
-    }
-  };
+    },
+    [onSubmitForm],
+  );
 
   return (
     <ChatArea>
